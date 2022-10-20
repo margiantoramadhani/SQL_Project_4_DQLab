@@ -1,4 +1,4 @@
-#### Data Analysis for E-Commerce Challenge
+## Data Analysis for E-Commerce Challenge
 
 ----
 
@@ -57,3 +57,120 @@
 </details>
 
 ----
+
+#### 10 Transaksi terbesar user 12476
+Lengkapi kode SQL berikut ini agar menampilkan 10 transaksi dari pembelian dari pengguna dengan user_id 12476, urutkan dari nilai transaksi paling besar. Tampilkan variabel seller_id, buyer_id, nilai_transaksi, dan tanggal_transaksi.
+
+```sql
+SELECT
+  seller_id, 
+  buyer_id, 
+  total AS nilai_transaksi, 
+  created_at AS tanggal_transaksi
+FROM 
+  orders
+WHERE 
+  buyer_id = 12476
+ORDER BY 
+  3 
+  DESC
+LIMIT 
+  10;
+```
+
+<details>
+<summary markdown="span">OUTPUT :</summary>
+
+| seller_id | buyer_id | nilai_transaksi | tanggal_transaksi   |
+|-----------|----------|-----------------|---------------------|
+|        61 |    12476 |        12014000 | 2019-12-23 00:00:00 |
+|        53 |    12476 |         9436000 | 2019-12-05 00:00:00 |
+|        64 |    12476 |         4951000 | 2019-12-19 00:00:00 |
+|        57 |    12476 |         4854000 | 2019-12-01 00:00:00 |
+|        22 |    12476 |         4010000 | 2019-11-29 00:00:00 |
+|        48 |    12476 |         1440000 | 2020-02-27 00:00:00 |
+|        61 |    12476 |         1053000 | 2019-10-17 00:00:00 |
+|        35 |    12476 |          816000 | 2020-05-12 00:00:00 |
+|        60 |    12476 |          740000 | 2019-09-26 00:00:00 |
+|         3 |    12476 |          399000 | 2019-09-26 00:00:00 |
+
+</details>
+
+----
+
+#### Transaksi per bulan
+Lengkapi kode SQL berikut ini agar menampilkan summary transaksi per bulan di tahun 2020.  
+
+```sql
+SELECT 
+  EXTRACT(YEAR_MONTH FROM created_at) AS tahun_bulan, 
+  count(1) AS jumlah_transaksi, 
+  SUM(total) AS total_nilai_transaksi
+FROM 
+  orders
+WHERE 
+  created_at>='2020-01-01'
+GROUP BY 1
+ORDER BY 1;
+```
+
+<details>
+<summary markdown="span">OUTPUT :</summary>
+
+| tahun_bulan | jumlah_transaksi | total_nilai_transaksi |
+|-------------|------------------|-----------------------|
+|      202001 |             5062 |            9941756800 |
+|      202002 |             5872 |           12665113550 |
+|      202003 |             7323 |           17189378400 |
+|      202004 |             7955 |           21219233750 |
+|      202005 |            10026 |           31288823000 |
+
+</details>
+
+----
+
+####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
