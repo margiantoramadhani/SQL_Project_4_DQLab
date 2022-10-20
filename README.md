@@ -145,7 +145,7 @@ GROUP BY 1
 HAVING 
   COUNT(1)>=2
 ORDER BY 3 DESC
-LIMIT 10
+LIMIT 10;
 ```
 
 <details>
