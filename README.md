@@ -244,19 +244,91 @@ LIMIT 5;
 
 </details>
 
+----
 
+#### Mencari pembeli high value
+Buatlah SQL query untuk mencari pembeli yang sudah bertransaksi lebih dari 5 kali, dan setiap transaksi lebih dari 2,000,000.</br>
+Tampilkan nama_pembeli, jumlah_transaksi, total_nilai_transaksi, min_nilai_transaksi. Urutkan dari total_nilai_transaksi terbesar!
 
+```sql
+SELECT
+  nama_user AS nama_pembeli,
+  COUNT(1) AS jumlah_transaksi,
+  SUM(total) AS total_nilai_transaksi,
+  MIN(total) AS min_nilai_transaksi
+FROM
+  orders
+INNER JOIN
+  users
+  ON buyer_id = user_id
+GROUP BY
+  user_id,
+  nama_user
+HAVING
+  COUNT(1) > 5 AND MIN(total) > 2000000
+ORDER BY
+  3 DESC;
+```
 
+<details>
+<summary markdown="span">OUTPUT :</summary>
 
+| nama_pembeli       | jumlah_transaksi | total_nilai_transaksi | min_nilai_transaksi |
+|--------------------|------------------|-----------------------|---------------------|
+| Dr. Sidiq Thamrin  |                6 |              41976000 |             2088000 |
+| Dina Lailasari     |                8 |              38195000 |             2736000 |
+| Puput Uyainah      |                6 |              32710000 |             2677000 |
+| R. Tirta Nasyidah  |                6 |              25117800 |             2308800 |
+| Martani Laksmiwati |                6 |              24858000 |             2144000 |
+| Fitria Narpati     |                6 |              22820000 |             2337000 |
 
+</details>
 
+----
 
+#### Mencari Dropshipper
+Pada soal kali ini kamu diminta untuk mencari tahu pengguna yang menjadi dropshipper, yakni pembeli yang membeli barang akan tetapi dikirim ke orang lain. Ciri-cirinya yakni transaksinya banyak, dengan alamat yang berbeda-beda.</br>
+Jadi buatlah SQL query untuk mencari pembeli dengan 10 kali transaksi atau lebih yang alamat pengiriman transaksi selalu berbeda setiap transaksi.</br>
+Tampilkan nama_pembeli, jumlah_transaksi, distinct_kodepos, total_nilai_transaksi, avg_nilai_transaksi. Urutkan dari jumlah transaksi terbesar.
 
+```sql
+SELECT
+  nama_user AS nama_pembeli,
+  COUNT(1) AS jumlah_transaksi,
+  COUNT(DISTINCT orders.kodepos) AS distinct_kodepos,
+  SUM(total) AS total_nilai_transaksi,
+  AVG(total) AS avg_nilai_transaksi
+FROM
+  orders 
+INNER JOIN
+  users
+  ON buyer_id = user_id
+GROUP BY
+  user_id,
+  nama_user
+HAVING
+  COUNT(1) >= 10 
+  AND COUNT(1) = COUNT(DISTINCT orders.kodepos)
+ORDER BY
+  2 DESC;
+```
 
+<details>
+<summary markdown="span">OUTPUT :</summary>
 
+| nama_pembeli       | jumlah_transaksi | distinct_kodepos | total_nilai_transaksi | avg_nilai_transaksi |
+|--------------------|------------------|------------------|-----------------------|---------------------|
+| Anastasia Gunarto  |               10 |               10 |               7899000 |         789900.0000 |
+| R.M. Setya Waskita |               10 |               10 |              30595000 |        3059500.0000 |
+  
+</details>
 
+----
 
-
+#### Mencari Reseller Offline
+Selanjutnya, akan dicari tahu jenis pengguna yang menjadi reseller offline atau punya toko offline, yakni pembeli yang sering sekali membeli barang dan seringnya dikirimkan ke alamat yang sama. Pembelian juga dengan quantity produk yang banyak. Sehingga kemungkinan barang ini akan dijual lagi.</br>
+Jadi buatlah SQL query untuk mencari pembeli yang punya 8 tau lebih transaksi yang alamat pengiriman transaksi sama dengan alamat pengiriman utama, dan rata-rata total quantity per transaksi lebih dari 10.</br>
+Tampilkan nama_pembeli, jumlah_transaksi, total_nilai_transaksi, avg_nilai_transaksi, avg_quantity_per_transaksi. Urutkan dari total_nilai_transaksi yang paling besar
 
 
 
