@@ -330,13 +330,161 @@ Selanjutnya, akan dicari tahu jenis pengguna yang menjadi reseller offline atau 
 Jadi buatlah SQL query untuk mencari pembeli yang punya 8 tau lebih transaksi yang alamat pengiriman transaksi sama dengan alamat pengiriman utama, dan rata-rata total quantity per transaksi lebih dari 10.</br>
 Tampilkan nama_pembeli, jumlah_transaksi, total_nilai_transaksi, avg_nilai_transaksi, avg_quantity_per_transaksi. Urutkan dari total_nilai_transaksi yang paling besar
 
+```sql
+SELECT
+	nama_user AS nama_pembeli,
+	COUNT(1) AS jumlah_transaksi,
+	SUM(total) AS total_nilai_transaksi,
+	AVG(total) AS avg_nilai_transaksi,
+	AVG(total_quantity) AS avg_quantity_per_transaksi
+FROM
+	orders
+INNER JOIN
+	users
+	ON buyer_id = user_id
+INNER JOIN
+	(SELECT order_id, sum(quantity) AS total_quantity
+	FROM order_details
+	GROUP BY 1) AS summary_order
+	USING(order_id)
+WHERE
+	orders.kodepos = users.kodepos
+GROUP BY
+	user_id,
+	nama_user
+HAVING
+	COUNT(1) >= 8 AND AVG(total_quantity) > 10
+ORDER BY
+	3 DESC;
+```
 
+<details>
+<summary markdown="span">OUTPUT :</summary>
 
+| nama_pembeli                | jumlah_transaksi | total_nilai_transaksi | avg_nilai_transaksi | avg_quantity_per_transaksi |
+|-----------------------------|------------------|-----------------------|---------------------|----------------------------|
+| Gandi Rahmawati             |               12 |              36822000 |        3068500.0000 |                    65.1667 |
+| Tgk. Cengkal Hutasoit, M.Ak |                8 |              33943000 |        4242875.0000 |                    91.7500 |
+| Prima Usamah                |                8 |              24576000 |        3072000.0000 |                    67.2500 |
+| Ir. Paris Siregar, S.Sos    |                8 |              22512000 |        2814000.0000 |                    87.7500 |
+| Raisa Habibi, S.Ked         |                8 |              17344000 |        2168000.0000 |                    54.7500 |
+| R. Prima Laksmiwati, S.Gz   |                8 |              17269000 |        2158625.0000 |                    50.1250 |
+| Lulut Pangestu, S.Ked       |                8 |              16580000 |        2072500.0000 |                    79.2500 |
+| Dt. Radika Winarno          |                8 |              16320000 |        2040000.0000 |                    45.2500 |
+| Kayla Astuti                |               12 |              15953250 |        1329437.5000 |                    40.3333 |
+| Ajiman Haryanti             |                8 |              15527000 |        1940875.0000 |                    47.5000 |
+| Laila Jailani               |               10 |              14412000 |        1441200.0000 |                    56.2000 |
+| Jaka Hastuti                |                8 |              13914000 |        1739250.0000 |                    39.5000 |
+| Anastasia Safitri           |                8 |              13188000 |        1648500.0000 |                    51.7500 |
+| Dr. Ganep Latupono, S.Kom   |                8 |              12443200 |        1555400.0000 |                    70.0000 |
+| Luhung Pradipta             |                8 |              11272000 |        1409000.0000 |                    65.6250 |
+| R.M. Gaiman Setiawan        |                8 |              11268000 |        1408500.0000 |                    71.5000 |
+| Ir. Shania Padmasari, S.Psi |               10 |              10839200 |        1083920.0000 |                    44.0000 |
+| Wirda Aryani                |                8 |              10580000 |        1322500.0000 |                    36.7500 |
+| Drs. Indah Megantara, M.TI. |                8 |              10176000 |        1272000.0000 |                    47.2500 |
+| T. Empluk Mandasari, S.IP   |                8 |              10066500 |        1258312.5000 |                    48.5000 |
+| Among Nugroho               |                8 |               9996000 |        1249500.0000 |                    30.2500 |
+| R. Tania Pangestu           |                8 |               9414000 |        1176750.0000 |                    47.7500 |
+| Cakrawangsa Prasetyo, S.T.  |               10 |               7966000 |         796600.0000 |                    28.6000 |
+| dr. Galuh Hastuti, S.IP     |                8 |               4352000 |         544000.0000 |                    26.7500 |
+| Oni Halim                   |                8 |               2472000 |         309000.0000 |                    26.0000 |
+ 
+</details>
 
+----
 
+#### Pembeli sekaligus penjual
+Pada soal ini, buatlah SQL query untuk mencari penjual yang juga pernah bertransaksi sebagai pembeli minimal 7 kali.</br>
+Tampilkan nama_pengguna, jumlah_transaksi_beli, jumlah_transaksi_jual. Urutkan berdasarkan abjad dari nama_pengguna.
 
+```sql
+SELECT
+	nama_user AS nama_pengguna,
+	jumlah_transaksi_beli,
+	jumlah_transaksi_jual
+FROM
+	users
+INNER JOIN
+	(SELECT buyer_id, count(1) AS jumlah_transaksi_beli
+	FROM orders
+	GROUP BY 1) AS buyer
+	ON buyer_id = user_id
+INNER JOIN
+	(SELECT seller_id, count(1) AS jumlah_transaksi_jual
+	FROM orders
+	GROUP BY 1) AS seller
+	ON seller_id = user_id
+WHERE
+	jumlah_transaksi_beli >= 7
+ORDER BY
+	1;
+  ```
+  
+<details>
+<summary markdown="span">OUTPUT :</summary>
 
+| nama_pengguna              | jumlah_transaksi_beli | jumlah_transaksi_jual |
+|----------------------------|-----------------------|-----------------------|
+| Bahuwirya Haryanto         |                     8 |                  1032 |
+| Bahuwirya Haryanto         |                     8 |                  1032 |
+| Dr. Adika Kusmawati, S.Pt  |                     7 |                  1098 |
+| Dr. Adika Kusmawati, S.Pt  |                     7 |                  1098 |
+| Gandi Rahmawati            |                     8 |                  1078 |
+| Gandi Rahmawati            |                     8 |                  1078 |
+| Jaka Hastuti               |                     7 |                  1094 |
+| Jaka Hastuti               |                     7 |                  1094 |
+| R.M. Prayogo Damanik, S.Pt |                     8 |                  1044 |
+| R.M. Prayogo Damanik, S.Pt |                     8 |                  1044 |
 
+</details>
 
+----
 
+#### Lama transaksi dibayar
+Ingin diketahui bagaimana trend lama waktu transaksi dibayar sejak dibuat.</br>
+Buatlah SQL Query untuk menghitung rata-rata lama waktu dari transaksi dibuat sampai dibayar, dikelompokkan per bulan.</br>
+Tampilkan tahun_bulan, jumlah_transaksi, avg_lama_dibayar, min_lama_dibayar, max_lama_dibayar. Urutkan berdasarkan tahun_bulan
 
+```sql
+SELECT
+  EXTRACT(YEAR_MONTH
+  FROM
+  created_at) AS tahun_bulan,
+  COUNT(1) AS jumlah_transaksi,
+  AVG(DATEDIFF(paid_at, created_at)) AS avg_lama_dibayar,
+  MIN(DATEDIFF(paid_at, created_at)) min_lama_dibayar,
+  MAX(DATEDIFF(paid_at, created_at)) max_lama_dibayar
+FROM
+  orders
+WHERE
+  paid_at IS NOT NULL
+GROUP BY
+  1
+ORDER BY
+  1;
+```
+
+<details>
+<summary markdown="span">OUTPUT :</summary>
+  
+| tahun_bulan | jumlah_transaksi | avg_lama_dibayar | min_lama_dibayar | max_lama_dibayar |
+|-------------|------------------|------------------|------------------|------------------|
+|      201901 |              117 |           7.0467 |                1 |               14 |
+|      201902 |              354 |           7.5399 |                1 |               14 |
+|      201903 |              668 |           7.4602 |                1 |               14 |
+|      201904 |              984 |           7.2910 |                1 |               14 |
+|      201905 |             1462 |           7.3692 |                1 |               14 |
+|      201906 |             1913 |           7.5729 |                1 |               14 |
+|      201907 |             2667 |           7.4549 |                1 |               14 |
+|      201908 |             3274 |           7.6216 |                1 |               14 |
+|      201909 |             4327 |           7.5021 |                1 |               14 |
+|      201910 |             5577 |           7.4706 |                1 |               14 |
+|      201911 |             7162 |           7.5188 |                1 |               14 |
+|      201912 |            10131 |           7.4980 |                1 |               14 |
+|      202001 |             5062 |           7.4152 |                1 |               14 |
+|      202002 |             5872 |           7.5092 |                1 |               14 |
+|      202003 |             7323 |           7.4674 |                1 |               14 |
+|      202004 |             7955 |           7.4792 |                1 |               14 |
+|      202005 |            10026 |           7.4549 |                1 |               14 |
+
+</details>
