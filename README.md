@@ -129,26 +129,120 @@ ORDER BY 1;
 
 ----
 
-####
+#### Pengguna dengan rata-rata transaksi terbesar di Januari 2020
+Lengkapi kode SQL berikut ini agar menampilkan 10 pembeli dengan rata-rata nilai transaksi terbesar yang bertransaksi minimal 2 kali di Januari 2020. Tampilkan variabel buyer_id, jumlah_transaksi, dan avg_nilai_transaksi.
 
+```sql
+SELECT 
+  buyer_id, 
+  COUNT(1) AS jumlah_transaksi, 
+  AVG(total) AS avg_nilai_transaksi
+FROM 
+  orders
+WHERE 
+  created_at>='2020-01-01' AND created_at<'2020-02-01'
+GROUP BY 1
+HAVING 
+  COUNT(1)>=2
+ORDER BY 3 DESC
+LIMIT 10
+```
 
+<details>
+<summary markdown="span">OUTPUT :</summary>
 
+| buyer_id | jumlah_transaksi | avg_nilai_transaksi |
+|----------|------------------|---------------------|
+|    11140 |                2 |       11719500.0000 |
+|     7905 |                2 |       10440000.0000 |
+|    12935 |                2 |        8556500.0000 |
+|    12916 |                2 |        7747000.0000 |
+|    17282 |                2 |        6797500.0000 |
+|     1418 |                2 |        6741000.0000 |
+|     5418 |                2 |        5336000.0000 |
+|    11906 |                2 |        5309500.0000 |
+|    12533 |                2 |        5218500.0000 |
+|      841 |                2 |        5052500.0000 |
 
+</details>
 
+----
 
+#### Transaksi besar di Desember 2019
 
+Lengkapi kode SQL berikut ini agar menampilkan semua nilai transaksi minimal 20,000,000 di bulan Desember 2019, tampilkan nama_pembeli, nilai transaksi dan tanggal_transaksi, urutkan sesuai abjad pembeli.
 
+```sql
+SELECT
+  nama_user AS nama_pembeli, 
+  total AS nilai_transaksi, 
+  created_at AS tanggal_transaksi
+FROM
+  orders
+INNER JOIN
+  users ON buyer_id = user_id
+WHERE 
+  created_at>='2019-12-01' 
+  AND created_at<'2020-01-01'
+  AND total >=20000000
+ORDER BY 1;
+```
 
+<details>
+<summary markdown="span">OUTPUT :</summary>
 
+| nama_pembeli                  | nilai_transaksi | tanggal_transaksi   |
+|-------------------------------|-----------------|---------------------|
+| Diah Mahendra                 |        21142000 | 2019-12-24 00:00:00 |
+| Dian Winarsih                 |        22966000 | 2019-12-21 00:00:00 |
+| dr. Yulia Waskita             |        29930000 | 2019-12-28 00:00:00 |
+| drg. Kajen Siregar            |        27893500 | 2019-12-10 00:00:00 |
+| Drs. Ayu Lailasari            |        22300000 | 2019-12-09 00:00:00 |
+| Hendri Habibi                 |        21815000 | 2019-12-19 00:00:00 |
+| Kartika Habibi                |        25760000 | 2019-12-22 00:00:00 |
+| Lasmanto Natsir               |        22845000 | 2019-12-27 00:00:00 |
+| R.A. Betania Suryono          |        20523000 | 2019-12-07 00:00:00 |
+| Syahrini Tarihoran            |        29631000 | 2019-12-05 00:00:00 |
+| Tgk. Hamima Sihombing, M.Kom. |        29351400 | 2019-12-25 00:00:00 |
+| Tgk. Lidya Lazuardi, S.Pt     |        20447000 | 2019-12-16 00:00:00 |
 
+</details>
 
+----
 
+#### Kategori Produk Terlaris di 2020
 
+Lengkapi kode SQL berikut ini agar menampilkan 5 Kategori dengan total quantity terbanyak di tahun 2020, hanya untuk transaksi yang sudah terkirim ke pembeli. Tampilkan category, total_quantity, total_price.
 
+```sql
+SELECT
+  category, 
+  SUM(quantity) AS total_quantity, 
+  SUM(price) AS total_price
+FROM 
+  orders
+INNER JOIN order_details USING(order_id)
+INNER JOIN products USING(product_id)
+WHERE 
+  created_at>='2020-01-01'
+  AND delivery_at is not null
+GROUP BY 1
+ORDER BY 2 desc
+LIMIT 5;
+```
 
+<details>
+<summary markdown="span">OUTPUT :</summary>
 
+| category        | total_quantity | total_price |
+|-----------------|----------------|-------------|
+| Kebersihan Diri |         944018 |  1333153000 |
+| Fresh Food      |         298372 |   793756000 |
+| Makanan Instan  |         280481 |    67868000 |
+| Bahan Makanan   |         218151 |   120563000 |
+| Minuman Ringan  |         212103 |    63017000 |
 
-
+</details>
 
 
 
